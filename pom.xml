@@ -11,10 +11,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.elasticsearch>5.0.0</version.elasticsearch>
-        <version.junit>4.11</version.junit>
+        <version.junit>4.12</version.junit>
         <!-- Logging -->
         <version.slf4j>1.7.9</version.slf4j>
         <version.logback>1.1.7</version.logback>
+        <!-- JSON -->
+        <version.jackson>2.7.5</version.jackson>
+        <version.commons-lang3>3.4</version.commons-lang3>
     </properties>
 
     <dependencyManagement>
@@ -53,6 +56,29 @@
                 <artifactId>logback-core</artifactId>
                 <version>${version.logback}</version>
             </dependency>
+
+            <!-- Jackson Databind API -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${version.jackson}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${version.commons-lang3}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -74,6 +100,31 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
         </dependency>
+
+        <!-- ES -->
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+        </dependency>
+
+        <!-- Jackson Databind API -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -89,9 +140,9 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.1</version>
                     <configuration>
-                        <compilerVersion>1.6</compilerVersion>
-                        <source>1.7</source>
-                        <target>1.7</target>
+                        <compilerVersion>1.8</compilerVersion>
+                        <source>1.8</source>
+                        <target>1.8</target>
                     </configuration>
                 </plugin>
             </plugins>

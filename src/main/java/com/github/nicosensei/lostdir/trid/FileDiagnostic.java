@@ -7,11 +7,11 @@ import java.util.ArrayList;
 /**
  * Created by nicos on 11/3/2016.
  */
-public final class FileTrid extends ArrayList<Extension> {
+public final class FileDiagnostic extends ArrayList<Extension> {
 
     private final String path;
 
-    public FileTrid(final String path) {
+    public FileDiagnostic(final String path) {
         super(3);
         this.path = path;
     }

@@ -1,7 +1,6 @@
 package com.github.nicosensei.lostdir.trid;
 
 import com.github.nicosensei.lostdir.helpers.process.StdOutProcessor;
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * Created by nicos on 11/3/2016.
  */
-public final class TridOuputProcessor extends StdOutProcessor<FileTrid> {
+public final class TridOuputProcessor extends StdOutProcessor<FileDiagnostic> {
 
     private static final String REGEX_WHITESPACE = "\\s+";
 
@@ -24,12 +23,12 @@ public final class TridOuputProcessor extends StdOutProcessor<FileTrid> {
     private boolean readFileName = false;
 
     @Override
-    protected FileTrid initResult() {
-        return new FileTrid(analyzedFile);
+    protected FileDiagnostic initResult() {
+        return new FileDiagnostic(analyzedFile);
     }
 
     @Override
-    protected void processStdOutLine(final String line, final FileTrid result) {
+    protected void processStdOutLine(final String line, final FileDiagnostic result) {
         if (readFileName) {
             final Matcher m = PATTERN_EXT.matcher(line);
             if (m.find()) {
