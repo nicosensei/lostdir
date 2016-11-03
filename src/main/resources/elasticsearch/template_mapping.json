@@ -1,0 +1,27 @@
+{
+  "@mapping@": {
+    "dynamic": true,
+    "dynamic_templates": [
+      {
+        "strings": {
+          "match_mapping_type": "string",
+          "unmatch": "*_date",
+          "mapping": {
+            "type": "string",
+            "index": "not_analyzed"
+          }
+        }
+      },
+      {
+        "dates": {
+          "match_mapping_type": "string",
+          "match": "*_date",
+          "mapping": {
+            "type": "date",
+            "format": "dd-MM-yyyy HH:mm:ss"
+          }
+        }
+      }
+    ]
+  }
+}
