@@ -1,0 +1,17 @@
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%level] [%thread] %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+  <logger name="com.github.nicosensei" level="debug" additivity="false">
+    <appender-ref ref="STDOUT" />
+  </logger>
+
+</configuration>
