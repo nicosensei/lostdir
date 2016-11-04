@@ -182,6 +182,7 @@
         <module>lostdir-helpers</module>
         <module>lostdir-elasticsearch</module>
         <module>lostdir-scan</module>
+        <module>lostdir-distro</module>
     </modules>
 
 </project>

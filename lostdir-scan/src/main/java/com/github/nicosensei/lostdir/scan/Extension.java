@@ -11,11 +11,11 @@ public final class Extension {
 
     private final String description;
 
-    private final double rate;
+    private final double score;
 
-    public Extension(final String extension, final double rate, final String description) {
+    public Extension(final String extension, final double score, final String description) {
         this.extension = extension;
-        this.rate = rate;
+        this.score = score;
         this.description = description;
     }
 
@@ -23,14 +23,18 @@ public final class Extension {
         return extension;
     }
 
-    public double getRate() {
-        return rate;
+    public double getScore() {
+        return score;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
     public String toString() {
         return new StringBuilder(extension)
-                .append(GlobalConstants.CHAR_SPACE).append(rate)
+                .append(GlobalConstants.CHAR_SPACE).append(score)
                 .append(GlobalConstants.CHAR_SPACE).append(description)
                 .toString();
     }
