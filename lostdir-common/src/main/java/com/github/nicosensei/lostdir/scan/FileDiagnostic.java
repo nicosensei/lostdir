@@ -1,6 +1,8 @@
 package com.github.nicosensei.lostdir.scan;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 
 import java.io.File;
@@ -11,12 +13,20 @@ import java.io.File;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public final class FileDiagnostic {
 
+    public static final String INDEX = "trid";
+    public static final String TYPE = "diag";
+
     private final String path;
 
     private Extension extension;
 
+    @JsonCreator
+    public FileDiagnostic(@JsonProperty("path") final String path) {
+        this.path = path;
+    }
+
     public FileDiagnostic(final File file) {
-        this.path = file.getAbsolutePath();
+        this(file.getAbsolutePath());
     }
 
     public String getPath() {

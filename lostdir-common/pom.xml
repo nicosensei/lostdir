@@ -9,7 +9,7 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>lostdir-helpers</artifactId>
+    <artifactId>lostdir-common</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

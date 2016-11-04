@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.nicosensei</groupId>
-            <artifactId>lostdir-helpers</artifactId>
+            <artifactId>lostdir-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

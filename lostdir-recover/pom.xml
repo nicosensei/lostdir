@@ -9,12 +9,12 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>lostdir-elasticsearch</artifactId>
-    <packaging>jar</packaging>
-
     <properties>
-        <mainClass>com.github.nicosensei.lostdir.elasticsearch.LocalNodeRunner</mainClass>
+        <mainClass>com.github.nicosensei.lostdir.recover.Recovery</mainClass>
     </properties>
+
+    <artifactId>lostdir-recover</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -23,8 +23,19 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
+            <groupId>com.github.nicosensei</groupId>
+            <artifactId>lostdir-elasticsearch</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Tika -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parsers</artifactId>
         </dependency>
     </dependencies>
 

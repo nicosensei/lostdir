@@ -14,35 +14,23 @@ import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.index.VersionType;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by nicos on 11/3/2016.
  */
-public final class GenericIndex implements BulkProcessor.Listener {
+public final class GenericIndexer implements BulkProcessor.Listener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GenericIndex.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GenericIndexer.class);
 
     private static final String VAR_MAPPING = "mapping";
     private static final String RESOURCE_SETTINGS = "/elasticsearch/_settings.json";
@@ -67,7 +55,7 @@ public final class GenericIndex implements BulkProcessor.Listener {
     private long waitForCloseMinutes = 5;
     private final BulkProcessor bulkProcessor;
 
-    public GenericIndex(final Client client) {
+    public GenericIndexer(final Client client) {
         this.client = client;
         this.adminClient = client.admin().indices();
         this.bulkProcessor = BulkProcessor.builder(client, this)
@@ -115,66 +103,6 @@ public final class GenericIndex implements BulkProcessor.Listener {
         }
     }
 
-    public final MapDocument getDocument(final String index, final String type, final String id) {
-        if (!isRegisteredType(index, type)) {
-            return null;
-        }
-        final GetResponse get = client.prepareGet(index, type, id).get();
-        if (!get.isExists()) {
-            return null;
-        }
-        return new MapDocument(type, id, get.getSource());
-    }
-
-    public final List<MapDocument> searchDocuments(
-            final String index,
-            final String type,
-            final Map<String, Object> filter,
-            final Map<String, Object> mustNot,
-            final Set<String> exist,
-            final Set<String> missing,
-            final Map<String, SortOrder> sorts,
-            final int size) {
-        if (!isRegisteredType(index, type)) {
-            return Collections.EMPTY_LIST;
-        }
-
-        final BoolQueryBuilder query = QueryBuilders.boolQuery();
-        for (String field : filter.keySet()) {
-            query.filter(QueryBuilders.termQuery(field, filter.get(field)));
-        }
-        for (String field : mustNot.keySet()) {
-            query.mustNot(QueryBuilders.termQuery(field, mustNot.get(field)));
-        }
-        for (String field : exist) {
-            query.filter(QueryBuilders.existsQuery(field));
-        }
-        for (String field : missing) {
-            query.mustNot(QueryBuilders.existsQuery(field));
-        }
-
-        final SearchRequestBuilder search = client.prepareSearch(index)
-                .setTypes(type)
-                .setSize(size)
-                .setQuery(query);
-
-        for (String field : sorts.keySet()) {
-            search.addSort(SortBuilders.fieldSort(field).order(sorts.get(field)));
-        }
-
-        final SearchResponse resp = search.get();
-        if (resp.getHits().getTotalHits() == 0) {
-            return Collections.EMPTY_LIST;
-        }
-
-        final SearchHit[] hits = resp.getHits().hits();
-        final ArrayList<MapDocument> docs = new ArrayList<>(hits.length);
-        for (SearchHit hit : hits) {
-            docs.add(new MapDocument(type, hit.getId(), hit.getSource()));
-        }
-        return docs;
-    }
-
     public boolean isRegisteredType(final String index, final String type) {
         final GetMappingsResponse mappingsResp = adminClient.prepareGetMappings(index).get();
         return mappingsResp.mappings().get(index).containsKey(type);
@@ -182,7 +110,7 @@ public final class GenericIndex implements BulkProcessor.Listener {
 
     public void registerType(final String index, final String type) {
         try {
-            final StringBuilder template = TextUtils.readTextFile(GenericIndex.class.getResourceAsStream(RESOURCE_MAPPING_TEMPLATE));
+            final StringBuilder template = TextUtils.readTextFile(GenericIndexer.class.getResourceAsStream(RESOURCE_MAPPING_TEMPLATE));
             new StringSubstitutor().replaceIn(template, Collections.singletonMap(VAR_MAPPING, type));
 
             final PutMappingResponse resp = client.admin().indices().preparePutMapping(index)
@@ -214,7 +142,7 @@ public final class GenericIndex implements BulkProcessor.Listener {
         // Get the index settings file
         StringBuilder settingsText = null;
         try {
-            settingsText = TextUtils.readTextFile(GenericIndex.class.getResourceAsStream(RESOURCE_SETTINGS));
+            settingsText = TextUtils.readTextFile(GenericIndexer.class.getResourceAsStream(RESOURCE_SETTINGS));
         } catch (final IOException e) {
             throw new ElasticsearchException("Index {} creation failed", indexName, e);
         }

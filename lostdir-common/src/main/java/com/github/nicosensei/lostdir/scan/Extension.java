@@ -1,5 +1,7 @@
 package com.github.nicosensei.lostdir.scan;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 
 /**
@@ -13,7 +15,11 @@ public final class Extension {
 
     private final double score;
 
-    public Extension(final String extension, final double score, final String description) {
+    @JsonCreator
+    public Extension(
+            @JsonProperty("extension") final String extension,
+            @JsonProperty("score") final double score,
+            @JsonProperty("description") final String description) {
         this.extension = extension;
         this.score = score;
         this.description = description;

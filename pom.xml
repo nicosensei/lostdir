@@ -21,6 +21,9 @@
         <!-- Apache Commons -->
         <version.commons-lang3>3.4</version.commons-lang3>
         <version.commons-io>2.5</version.commons-io>
+
+        <!-- Tika -->
+        <version.tika>1.13</version.tika>
     </properties>
 
     <dependencyManagement>
@@ -95,6 +98,19 @@
                 <artifactId>commons-io</artifactId>
                 <version>${version.commons-io}</version>
             </dependency>
+
+            <!-- Tika -->
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${version.tika}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-parsers</artifactId>
+                <version>${version.tika}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -179,9 +195,10 @@
     </profiles>
 
     <modules>
-        <module>lostdir-helpers</module>
+        <module>lostdir-common</module>
         <module>lostdir-elasticsearch</module>
         <module>lostdir-scan</module>
+        <module>lostdir-recover</module>
         <module>lostdir-distro</module>
     </modules>
 

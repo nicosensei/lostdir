@@ -1,6 +1,6 @@
 package com.github.nicosensei.lostdir.scan.run;
 
-import com.github.nicosensei.lostdir.elasticsearch.GenericIndex;
+import com.github.nicosensei.lostdir.elasticsearch.GenericIndexer;
 import com.github.nicosensei.lostdir.elasticsearch.LocalNode;
 import com.github.nicosensei.lostdir.elasticsearch.LocalNodeDefaults;
 import com.github.nicosensei.lostdir.elasticsearch.MapDocument;
@@ -23,9 +23,6 @@ public final class ScanDirectoryES {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanDirectoryES.class);
 
-    public static final String INDEX = "trid";
-    public static final String TYPE = "diag";
-
     public static void main(final String[] args) throws IOException {
 
         if (args.length != 1) {
@@ -41,9 +38,9 @@ public final class ScanDirectoryES {
                 LocalNodeDefaults.TCP_PORT,
                 true);
 
-        final GenericIndex genIndex = new GenericIndex(elastic.client());
-        genIndex.createIndex(INDEX);
-        genIndex.registerType(INDEX, TYPE);
+        final GenericIndexer genIndex = new GenericIndexer(elastic.client());
+        genIndex.createIndex(FileDiagnostic.INDEX);
+        genIndex.registerType(FileDiagnostic.INDEX, FileDiagnostic.TYPE);
 
         final GenericJsonObjectMapper<FileDiagnostic> mapper = new GenericJsonObjectMapper<>();
 
@@ -70,8 +67,8 @@ public final class ScanDirectoryES {
                     }
 
                     genIndex.indexDocument(
-                            INDEX,
-                            new MapDocument(TYPE, diag.getPath(), mapper.asMap(diag)));
+                            FileDiagnostic.INDEX,
+                            new MapDocument(FileDiagnostic.TYPE, diag.getPath(), mapper.asMap(diag)));
                 } catch (final IOException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
