@@ -31,12 +31,9 @@ public final class TridOuputProcessor extends StdOutProcessor<FileDiagnostic> {
     @Override
     protected void processStdOutLine(final String line, final FileDiagnostic result) {
         if (readFileName) {
-            if (result.getExtension() != null) {
-                return;
-            }
             final Matcher m = PATTERN_EXT.matcher(line);
             if (m.find()) {
-                result.setExtension(new Extension(
+                result.addOrMergeExtension(new Extension(
                         m.group(2),
                         Double.parseDouble(m.group(1)),
                         m.group(3)));

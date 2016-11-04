@@ -4,6 +4,7 @@ import com.github.nicosensei.lostdir.elasticsearch.LocalNode;
 import com.github.nicosensei.lostdir.elasticsearch.LocalNodeDefaults;
 import com.github.nicosensei.lostdir.elasticsearch.Scroll;
 import com.github.nicosensei.lostdir.helpers.GenericJsonObjectMapper;
+import com.github.nicosensei.lostdir.helpers.TimeFormatter;
 import com.github.nicosensei.lostdir.scan.FileDiagnostic;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -52,6 +53,8 @@ public final class Recovery {
     }
 
     public final void recoverJPG(final File outputDir) {
+        final long start = System.currentTimeMillis();
+
         final BodyContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
         JpegParser JpegParser = new JpegParser();
@@ -65,7 +68,9 @@ public final class Recovery {
                 500,
                 null);
         SearchHit hit;
+        long count = 0;
         while ((hit = scroll.next()) != null) {
+            count++;
             final FileDiagnostic diag;
             try {
                 diag = mapper.deserialize(hit.getSource(), FileDiagnostic.class);
@@ -92,6 +97,8 @@ public final class Recovery {
 
             LOG.info(filePath);
         }
+
+        LOG.info("Processed {} files in {}", count, TimeFormatter.formatDurationSince(start));
     }
 
     public final void close() {

@@ -59,9 +59,9 @@ public final class ScanDirectoryES {
                     if (diag == null) {
                         diag = new FileDiagnostic(f);
                     }
-                    if (diag.getExtension() != null) {
+                    if (!diag.getExtensions().isEmpty()) {
                         recoverableCount++;
-                        LOG.info("[OK] {} - {}", diag.getPath(), diag.getExtension().toString());
+                        LOG.info("[OK] {} - {}", diag.toString());
                     } else {
                         LOG.info("[KO] {}", diag.getPath());
                     }

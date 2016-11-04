@@ -1,19 +1,21 @@
 package com.github.nicosensei.lostdir.scan;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 
 /**
  * Created by nicos on 11/3/2016.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public final class Extension {
 
     private final String extension;
 
     private final String description;
 
-    private final double score;
+    private double score;
 
     @JsonCreator
     public Extension(
@@ -27,6 +29,10 @@ public final class Extension {
 
     public String getExtension() {
         return extension;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
     }
 
     public double getScore() {
