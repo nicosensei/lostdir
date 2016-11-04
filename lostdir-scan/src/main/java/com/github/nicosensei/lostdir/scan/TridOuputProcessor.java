@@ -2,6 +2,7 @@ package com.github.nicosensei.lostdir.scan;
 
 import com.github.nicosensei.lostdir.helpers.process.StdOutProcessor;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +25,7 @@ public final class TridOuputProcessor extends StdOutProcessor<FileDiagnostic> {
 
     @Override
     protected FileDiagnostic initResult() {
-        return new FileDiagnostic(analyzedFile);
+        return new FileDiagnostic(new File(analyzedFile));
     }
 
     @Override

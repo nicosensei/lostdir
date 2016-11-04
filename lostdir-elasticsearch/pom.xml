@@ -12,6 +12,10 @@
     <artifactId>lostdir-elasticsearch</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <mainClass>com.github.nicosensei.lostdir.elasticsearch.LocalNodeRunner</mainClass>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.github.nicosensei</groupId>
@@ -40,7 +44,40 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!-- Below 2 lines fix classpath generation in Maven 3.2 -->
+                            <classpathLayoutType>custom</classpathLayoutType>
+                            <customClasspathLayout>$${artifact.artifactId}-$${artifact.version}$${dashClassifier?}.$${artifact.extension}
+                            </customClasspathLayout>
+                        </manifest>
+                        <manifestEntries>
+                            <Main-Class>${mainClass}</Main-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>standalone</shadedClassifierName>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

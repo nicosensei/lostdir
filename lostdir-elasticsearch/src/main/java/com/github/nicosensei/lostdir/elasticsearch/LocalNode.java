@@ -74,12 +74,12 @@ public final class LocalNode {
     }
 
     /**
-     * Finalizer method, closes client and purges temporary files.
-     * @throws Exception
+     * Finalizer method, closes client.
      */
-    public void destroy() throws Exception {
+    public void destroy() {
         client.close();
         node.close();
+        LOG.info("Closed local node");
     }
 
 }

@@ -2,6 +2,7 @@ package com.github.nicosensei.lostdir.scan.run;
 
 import com.github.nicosensei.lostdir.elasticsearch.GenericIndex;
 import com.github.nicosensei.lostdir.elasticsearch.LocalNode;
+import com.github.nicosensei.lostdir.elasticsearch.LocalNodeDefaults;
 import com.github.nicosensei.lostdir.elasticsearch.MapDocument;
 import com.github.nicosensei.lostdir.helpers.GenericJsonObjectMapper;
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
@@ -22,9 +23,6 @@ public final class ScanDirectoryES {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanDirectoryES.class);
 
-    private static final String ES_CLUSTER = "lostdir-es";
-    private static final int ES_TCP_PORT = 10300;
-
     public static final String INDEX = "trid";
     public static final String TYPE = "diag";
 
@@ -39,9 +37,9 @@ public final class ScanDirectoryES {
 
         final LocalNode elastic = new LocalNode(
                 GlobalConstants.CURRENT_DIR + File.separator + "elasticsearch",
-                ES_CLUSTER,
-                ES_TCP_PORT,
-                false);
+                LocalNodeDefaults.CLUSTER_NAME,
+                LocalNodeDefaults.TCP_PORT,
+                true);
 
         final GenericIndex genIndex = new GenericIndex(elastic.client());
         genIndex.createIndex(INDEX);
@@ -60,10 +58,9 @@ public final class ScanDirectoryES {
             for (File f : dir.listFiles()) {
                 try {
                     count++;
-                    LOG.info("Testing {}", f.getAbsolutePath());
                     FileDiagnostic diag = trid.testFile(f);
                     if (diag == null) {
-                        diag = new FileDiagnostic(f.getAbsolutePath());
+                        diag = new FileDiagnostic(f);
                     }
                     if (diag.getExtension() != null) {
                         recoverableCount++;
