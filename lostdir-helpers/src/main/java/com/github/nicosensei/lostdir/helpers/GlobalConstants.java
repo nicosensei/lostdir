@@ -16,4 +16,5 @@ public final class GlobalConstants {
 
     public static final String CHAR_SPACE = " ";
     public static final String CHAR_DOT = ".";
+    public static final String CHAR_SLASH = "/";
 }

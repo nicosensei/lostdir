@@ -1,7 +1,7 @@
-package com.github.nicosensei.lostdir.trid.run;
+package com.github.nicosensei.lostdir.scan.run;
 
-import com.github.nicosensei.lostdir.trid.FileDiagnostic;
-import com.github.nicosensei.lostdir.trid.Trid;
+import com.github.nicosensei.lostdir.scan.Trid;
+import com.github.nicosensei.lostdir.scan.FileDiagnostic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public final class ScanFile {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanFile.class);
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
         final Trid trid = new Trid(10, TimeUnit.SECONDS);
         try {
             LOG.info("Testing {}", args[0]);

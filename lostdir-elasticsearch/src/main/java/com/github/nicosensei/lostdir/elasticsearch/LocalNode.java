@@ -4,7 +4,6 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,11 +39,15 @@ public final class LocalNode {
 
         // Initialize paths
         this.homeDir = new File(homeDir);
+        if (!this.homeDir.exists()) {
+            this.homeDir.mkdirs();
+        }
+
         if (!this.homeDir.exists()
                 || !this.homeDir.isDirectory()
                 || !this.homeDir.canRead()
                 || !this.homeDir.canWrite()) {
-            throw new ElasticsearchException("Home dir is not readable or writable");
+            throw new ElasticsearchException("Home dir {} is not readable or writable", this.homeDir.getAbsolutePath());
         }
 
         // Initialize ES client
@@ -59,12 +62,7 @@ public final class LocalNode {
         settings.put(THREAD_POOl_NAME_PARAM, THREAD_POOl_NAME_VALUE);
 
         node = new Node(settings.build());
-        try {
-            node.start();
-        } catch (final NodeValidationException e) {
-            throw new ElasticsearchException(e.getMessage(), e);
-        }
-
+        node.start();
         client = node.client();
     }
 

@@ -1,8 +1,8 @@
-package com.github.nicosensei.lostdir.trid.run;
+package com.github.nicosensei.lostdir.scan.run;
 
 import com.github.nicosensei.lostdir.helpers.TimeFormatter;
-import com.github.nicosensei.lostdir.trid.FileDiagnostic;
-import com.github.nicosensei.lostdir.trid.Trid;
+import com.github.nicosensei.lostdir.scan.FileDiagnostic;
+import com.github.nicosensei.lostdir.scan.Trid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public final class ScanDirectory {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanDirectory.class);
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
         final long start = System.currentTimeMillis();
         final Trid trid = new Trid();
         final File dir = new File(args[0]);
@@ -30,10 +30,13 @@ public final class ScanDirectory {
             try {
                 count++;
                 LOG.info("Testing {}", f.getAbsolutePath());
-                final FileDiagnostic diag = trid.testFile(f);
-                if (diag.size() > 0) {
+                FileDiagnostic diag = trid.testFile(f);
+                if (diag == null) {
+                    diag = new FileDiagnostic(f.getAbsolutePath());
+                }
+                if (diag.getExtension() != null) {
                     recoverableCount++;
-                    LOG.info("[OK] {} - {}", diag.getPath(), diag.get(0).toString());
+                    LOG.info("[OK] {} - {}", diag.getPath(), diag.getExtension().toString());
                 } else {
                     failedCount++;
                     LOG.info("[KO] {}", diag.getPath());

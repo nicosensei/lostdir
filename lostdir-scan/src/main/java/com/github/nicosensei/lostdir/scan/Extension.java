@@ -1,4 +1,4 @@
-package com.github.nicosensei.lostdir.trid;
+package com.github.nicosensei.lostdir.scan;
 
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 
