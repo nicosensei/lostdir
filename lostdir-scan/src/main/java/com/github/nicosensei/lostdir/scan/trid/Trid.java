@@ -1,7 +1,8 @@
-package com.github.nicosensei.lostdir.scan;
+package com.github.nicosensei.lostdir.scan.trid;
 
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 import com.github.nicosensei.lostdir.helpers.process.ProcessRunner;
+import com.github.nicosensei.lostdir.scan.FileDiagnostic;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

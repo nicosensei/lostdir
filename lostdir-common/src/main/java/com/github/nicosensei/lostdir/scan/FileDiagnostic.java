@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -44,13 +45,13 @@ public final class FileDiagnostic {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder(path).append(": [");
+        final StringBuilder sb = new StringBuilder(path);
         for (Extension e : extensions) {
             sb.append(GlobalConstants.NEWLINE).append(e.getScore())
                     .append(GlobalConstants.CHAR_SPACE).append(e.getExtension())
                     .append(GlobalConstants.CHAR_SPACE).append(e.getDescription());
         }
-        return sb.append("]").toString();
+        return sb.toString();
     }
 
     public ArrayList<Extension> getExtensions() {
@@ -62,13 +63,24 @@ public final class FileDiagnostic {
     }
 
     public void addOrMergeExtension(final Extension e) {
-        for (Extension ext : extensions) {
-            if (e.getExtension().equals(ext.getExtension())) {
-                ext.setScore(ext.getScore() + e.getScore());
-                return;
-            }
+        final Extension ext = getExtension(e.getExtension());
+        if (ext != null) {
+            ext.setScore(new BigDecimal(ext.getScore())
+                    .add(new BigDecimal(e.getScore()))
+                    .setScale(1, BigDecimal.ROUND_HALF_DOWN)
+                    .doubleValue());
+            return;
         }
         this.extensions.add(e);
+    }
+
+    public Extension getExtension(final String ext) {
+        for (Extension e : extensions) {
+            if (e.getExtension().equals(ext)) {
+                return e;
+            }
+        }
+        return null;
     }
 
 }

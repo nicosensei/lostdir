@@ -1,4 +1,4 @@
-package com.github.nicosensei.lostdir.scan.run;
+package com.github.nicosensei.lostdir.scan;
 
 import com.github.nicosensei.lostdir.elasticsearch.GenericIndexer;
 import com.github.nicosensei.lostdir.elasticsearch.LocalNode;
@@ -7,8 +7,11 @@ import com.github.nicosensei.lostdir.elasticsearch.MapDocument;
 import com.github.nicosensei.lostdir.helpers.GenericJsonObjectMapper;
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 import com.github.nicosensei.lostdir.helpers.TimeFormatter;
-import com.github.nicosensei.lostdir.scan.FileDiagnostic;
-import com.github.nicosensei.lostdir.scan.Trid;
+import com.github.nicosensei.lostdir.scan.tika.JpegMetadataExtractor;
+import com.github.nicosensei.lostdir.scan.tika.M4rMetadataExtractor;
+import com.github.nicosensei.lostdir.scan.tika.M4vMetadataExtractor;
+import com.github.nicosensei.lostdir.scan.tika.Mp3MetadataExtractor;
+import com.github.nicosensei.lostdir.scan.trid.Trid;
 import org.elasticsearch.ElasticsearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,11 @@ public final class ScanDirectoryES {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanDirectoryES.class);
 
+    private final JpegMetadataExtractor jpegMetadataExtractor = new JpegMetadataExtractor();
+    private final M4vMetadataExtractor m4vMetadataExtractor = new M4vMetadataExtractor();
+    private final M4rMetadataExtractor m4rMetadataExtractor = new M4rMetadataExtractor();
+    private final Mp3MetadataExtractor mp3MetadataExtractor = new Mp3MetadataExtractor();
+
     public static void main(final String[] args) throws IOException {
 
         if (args.length != 1) {
@@ -30,6 +38,10 @@ public final class ScanDirectoryES {
             System.exit(0);
         }
 
+        new ScanDirectoryES().scan(args[0]);
+    }
+
+    public void scan(final String path) throws IOException {
         final long start = System.currentTimeMillis();
 
         final LocalNode elastic = new LocalNode(
@@ -46,7 +58,7 @@ public final class ScanDirectoryES {
 
         try {
             final Trid trid = new Trid();
-            final File dir = new File(args[0]);
+            final File dir = new File(path);
             assert dir.isDirectory();
             assert dir.canRead();
 
@@ -61,6 +73,7 @@ public final class ScanDirectoryES {
                     }
                     if (!diag.getExtensions().isEmpty()) {
                         recoverableCount++;
+                        extractMetadata(diag);
                         LOG.info("[OK] {} - {}", diag.toString());
                     } else {
                         LOG.info("[KO] {}", diag.getPath());
@@ -84,4 +97,17 @@ public final class ScanDirectoryES {
             }
         }
     }
+
+    private void extractMetadata(final FileDiagnostic diag) {
+        if (diag.getExtension(JpegMetadataExtractor.EXTENSION) != null) {
+            jpegMetadataExtractor.extractTo(diag);
+        } else if (diag.getExtension(M4vMetadataExtractor.EXTENSION) != null) {
+            m4vMetadataExtractor.extractTo(diag);
+        } else if (diag.getExtension(M4rMetadataExtractor.EXTENSION) != null) {
+            m4rMetadataExtractor.extractTo(diag);
+        } else if (diag.getExtension(Mp3MetadataExtractor.EXTENSION) != null) {
+            mp3MetadataExtractor.extractTo(diag);
+        }
+    }
+
 }

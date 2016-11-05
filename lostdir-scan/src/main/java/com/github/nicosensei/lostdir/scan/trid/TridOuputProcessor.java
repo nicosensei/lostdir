@@ -1,6 +1,8 @@
-package com.github.nicosensei.lostdir.scan;
+package com.github.nicosensei.lostdir.scan.trid;
 
 import com.github.nicosensei.lostdir.helpers.process.StdOutProcessor;
+import com.github.nicosensei.lostdir.scan.Extension;
+import com.github.nicosensei.lostdir.scan.FileDiagnostic;
 
 import java.io.File;
 import java.util.regex.Matcher;

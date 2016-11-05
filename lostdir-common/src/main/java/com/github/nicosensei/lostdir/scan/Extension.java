@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by nicos on 11/3/2016.
  */
@@ -16,6 +19,8 @@ public final class Extension {
     private final String description;
 
     private double score;
+
+    private ArrayList<KeyValuePair> metadata = null;
 
     @JsonCreator
     public Extension(
@@ -43,11 +48,20 @@ public final class Extension {
         return description;
     }
 
+    public ArrayList<KeyValuePair> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(final ArrayList<KeyValuePair> metadata) {
+        this.metadata = metadata;
+    }
+
     @Override
     public String toString() {
         return new StringBuilder(extension)
                 .append(GlobalConstants.CHAR_SPACE).append(score)
                 .append(GlobalConstants.CHAR_SPACE).append(description)
+                .append(GlobalConstants.NEWLINE).append(metadata.toString())
                 .toString();
     }
 }

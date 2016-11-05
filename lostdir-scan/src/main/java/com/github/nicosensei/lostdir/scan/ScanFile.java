@@ -1,7 +1,6 @@
-package com.github.nicosensei.lostdir.scan.run;
+package com.github.nicosensei.lostdir.scan;
 
-import com.github.nicosensei.lostdir.scan.Trid;
-import com.github.nicosensei.lostdir.scan.FileDiagnostic;
+import com.github.nicosensei.lostdir.scan.trid.Trid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
