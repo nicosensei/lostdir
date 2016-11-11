@@ -5,22 +5,23 @@ import com.github.nicosensei.lostdir.elasticsearch.LocalNodeDefaults;
 import com.github.nicosensei.lostdir.elasticsearch.Scroll;
 import com.github.nicosensei.lostdir.helpers.GenericJsonObjectMapper;
 import com.github.nicosensei.lostdir.helpers.TimeFormatter;
+import com.github.nicosensei.lostdir.scan.Extension;
 import com.github.nicosensei.lostdir.scan.FileDiagnostic;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.PropertyTypeException;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.jpeg.JpegParser;
-import org.apache.tika.sax.BodyContentHandler;
+import com.github.nicosensei.lostdir.scan.KeyValuePair;
+import org.apache.commons.io.IOUtils;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nicos on 11/4/2016.
@@ -29,9 +30,27 @@ public final class Recovery {
 
     private static final Logger LOG = LoggerFactory.getLogger(Recovery.class);
 
+    private static final String IMG_PREFIX = "IMG";
+    private static final String SEP = "_";
+    private static final String DOT_JPG = ".jpg";
+
+    private enum JpegMeta {
+        date("date"),
+        modified("modified"),
+        width("Image Width"),
+        height("Image Height"),
+        make("Make"),
+        fileSize("File Size");
+
+        private final String key;
+
+        JpegMeta(String key) {
+            this.key = key;
+        }
+    }
+
     private enum Field {
-        path("path"),
-        extension("extension.extension");
+        extension("extensions.extension");
 
         private final String field;
 
@@ -54,10 +73,7 @@ public final class Recovery {
 
     public final void recoverJPG(final File outputDir) {
         final long start = System.currentTimeMillis();
-
-        final BodyContentHandler handler = new BodyContentHandler();
-        Metadata metadata = new Metadata();
-        JpegParser JpegParser = new JpegParser();
+        long seq = 0;
 
         final Scroll scroll = new Scroll(
                 localNode.client(),
@@ -80,22 +96,14 @@ public final class Recovery {
             }
 
             final String filePath = diag.getPath();
-            final ParseContext pcontext = new ParseContext();
-            final FileInputStream inputstream;
-            try {
-                inputstream = new FileInputStream(new File(filePath));
-            } catch (final IOException e) {
-                LOG.error("Failed to deserialize doc " + hit.getId(), e);
-                continue;
-            }
-            try {
-                JpegParser.parse(inputstream, handler, metadata, pcontext);
-            } catch (final IOException | TikaException | SAXException | PropertyTypeException e) {
-                LOG.error("Failed to parse file " + filePath, e);
-                continue;
-            }
+            final Map<String, Object> metadata = metadataAsMap(diag, "JPG");
+            final StringBuilder name = new StringBuilder(IMG_PREFIX);
 
-            LOG.info(filePath);
+            final String date = (String) metadata.get(JpegMeta.date.key);
+            name.append(SEP).append(date != null ? date.replaceAll("\\D", "") : ++seq);
+            name.append(DOT_JPG);
+            recover(filePath, outputDir.getAbsolutePath() + File.separator + name.toString());
+            LOG.info("Recovered {} to {}", filePath, name.toString());
         }
 
         LOG.info("Processed {} files in {}", count, TimeFormatter.formatDurationSince(start));
@@ -106,26 +114,72 @@ public final class Recovery {
     }
 
     public static void main(final String[] args) throws IOException {
-        if (args.length != 3) {
-            LOG.error("Expected arguments: <extension> <ES home dir> <output dir>");
+        if (args.length != 2) {
+            LOG.error("Expected arguments: <ES home dir> <output dir>");
             System.exit(-1);
         }
 
-        final String ext = args[0];
-        final String esHomeDir = args[1];
-        final String outDirPath = args[2];
+        final String esHomeDir = args[0];
+        final String outDirPath = args[1];
 
-        if (!"JPG".equals(ext)) {
-            LOG.error("Recovery for type {} not yet supported!", ext);
-            System.exit(0);
+        final File outputDir = new File(outDirPath);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
         }
+        if (!outputDir.isDirectory() || !outputDir.canWrite()) {
+            LOG.error("Cannot write to " + outputDir.getAbsolutePath());
+            return;
+        }
+        LOG.info("Will recover files to " + outputDir.getAbsolutePath());
 
         final Recovery reco = new Recovery(esHomeDir);
         try {
-            reco.recoverJPG(new File(outDirPath));
+            reco.recoverJPG(outputDir);
         } finally {
             reco.close();
         }
+    }
+
+    private final void recover(final String sourcePath, final String targetPath) {
+        FileInputStream in = null;
+        FileOutputStream out = null;
+        try {
+            in = new FileInputStream(sourcePath);
+            out = new FileOutputStream(targetPath);
+            final int size = IOUtils.copy(in, out);
+            if (size < 0) {
+                LOG.error("Failed to copy {}", sourcePath);
+            }
+        } catch (final IOException e) {
+            LOG.error(e.getMessage(), e);
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (out != null) {
+                    out.close();
+                }
+            } catch (final IOException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private final Map<String, Object> metadataAsMap(final FileDiagnostic diag, final String ext) {
+        final Extension extension = diag.getExtension(ext);
+        if (extension == null) {
+            throw new IllegalArgumentException("No extension " + ext + " for " + diag.getPath());
+        }
+        final ArrayList<KeyValuePair> metadata = extension.getMetadata();
+        if (metadata == null) {
+            return Collections.emptyMap();
+        }
+        final HashMap<String, Object> metaMap = new HashMap<>(metadata.size());
+        for (KeyValuePair data : metadata) {
+            metaMap.put(data.getKey(), data.getValue());
+        }
+        return metaMap;
     }
 
 }

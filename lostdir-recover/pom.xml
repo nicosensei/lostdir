@@ -27,16 +27,6 @@
             <artifactId>lostdir-elasticsearch</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!-- Tika -->
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-parsers</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
