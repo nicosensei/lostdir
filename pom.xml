@@ -196,6 +196,7 @@
 
     <modules>
         <module>lostdir-common</module>
+        <module>lostdir-metadata</module>
         <module>lostdir-elasticsearch</module>
         <module>lostdir-scan</module>
         <module>lostdir-recover</module>

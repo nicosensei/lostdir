@@ -30,25 +30,6 @@ public final class Recovery {
 
     private static final Logger LOG = LoggerFactory.getLogger(Recovery.class);
 
-    private static final String IMG_PREFIX = "IMG";
-    private static final String SEP = "_";
-    private static final String DOT_JPG = ".jpg";
-
-    private enum JpegMeta {
-        date("date"),
-        modified("modified"),
-        width("Image Width"),
-        height("Image Height"),
-        make("Make"),
-        fileSize("File Size");
-
-        private final String key;
-
-        JpegMeta(String key) {
-            this.key = key;
-        }
-    }
-
     private enum Field {
         extension("extensions.extension");
 
@@ -71,7 +52,7 @@ public final class Recovery {
         localNode.client().admin().indices().prepareRefresh(FileDiagnostic.INDEX).get();
     }
 
-    public final void recoverJPG(final File outputDir) {
+    public final void recover(final String ext, final File outputDir, final FileNameBuilder fileNameBuilder) {
         final long start = System.currentTimeMillis();
         long seq = 0;
 
@@ -80,7 +61,7 @@ public final class Recovery {
                 FileDiagnostic.INDEX,
                 FileDiagnostic.TYPE,
                 QueryBuilders.boolQuery()
-                        .filter(QueryBuilders.termQuery(Field.extension.field, "JPG")),
+                        .filter(QueryBuilders.termQuery(Field.extension.field, ext)),
                 500,
                 null);
         SearchHit hit;
@@ -96,13 +77,8 @@ public final class Recovery {
             }
 
             final String filePath = diag.getPath();
-            final Map<String, Object> metadata = metadataAsMap(diag, "JPG");
-            final StringBuilder name = new StringBuilder(IMG_PREFIX);
-
-            final String date = (String) metadata.get(JpegMeta.date.key);
-            name.append(SEP).append(date != null ? date.replaceAll("\\D", "") : ++seq);
-            name.append(DOT_JPG);
-            recover(filePath, outputDir.getAbsolutePath() + File.separator + name.toString());
+            final String name = fileNameBuilder.build(metadataAsMap(diag, ext));
+            recover(filePath, outputDir.getAbsolutePath() + File.separator + name);
             LOG.info("Recovered {} to {}", filePath, name.toString());
         }
 
@@ -134,7 +110,8 @@ public final class Recovery {
 
         final Recovery reco = new Recovery(esHomeDir);
         try {
-            reco.recoverJPG(outputDir);
+            reco.recover("JPG", outputDir, new JpgFileNameBuilder());
+            reco.recover("MP4", outputDir, new Mp4FileNameBuilder());
         } finally {
             reco.close();
         }

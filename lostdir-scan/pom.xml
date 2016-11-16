@@ -24,18 +24,13 @@
         </dependency>
         <dependency>
             <groupId>com.github.nicosensei</groupId>
-            <artifactId>lostdir-elasticsearch</artifactId>
+            <artifactId>lostdir-metadata</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!-- Tika -->
         <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-parsers</artifactId>
+            <groupId>com.github.nicosensei</groupId>
+            <artifactId>lostdir-elasticsearch</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

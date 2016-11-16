@@ -1,4 +1,4 @@
-package com.github.nicosensei.lostdir.scan.tika;
+package com.github.nicosensei.lostdir.tika;
 
 import org.apache.tika.parser.AbstractParser;
 import org.apache.tika.parser.jpeg.JpegParser;

@@ -1,4 +1,4 @@
-package com.github.nicosensei.lostdir.scan.tika;
+package com.github.nicosensei.lostdir.tika;
 
 /**
  * Created by nicos on 11/5/2016.

@@ -1,4 +1,4 @@
-package com.github.nicosensei.lostdir.scan.tika;
+package com.github.nicosensei.lostdir.tika;
 
 import com.github.nicosensei.lostdir.scan.FileDiagnostic;
 import com.github.nicosensei.lostdir.scan.KeyValuePair;
@@ -10,14 +10,11 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.sax.BodyContentHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by nicos on 11/5/2016.
