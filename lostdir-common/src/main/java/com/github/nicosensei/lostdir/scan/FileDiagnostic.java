@@ -83,4 +83,16 @@ public final class FileDiagnostic {
         return null;
     }
 
+    public void apply(final ScanPolicy policy) {
+        final ArrayList<Extension> keep = new ArrayList<>(extensions.size());
+        for (Extension ext : extensions) {
+            if (ScanPolicy.LOOK_FOR_EXT.contains(ext.getExtension())
+                    && ext.getScore() >= policy.getKeepThreshold()) {
+                keep.add(ext);
+            }
+        }
+        this.extensions.clear();
+        this.extensions.addAll(keep);
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.github.nicosensei.lostdir.tika;
+package com.github.nicosensei.lostdir.metadata;
 
 /**
  * Created by nicos on 11/5/2016.

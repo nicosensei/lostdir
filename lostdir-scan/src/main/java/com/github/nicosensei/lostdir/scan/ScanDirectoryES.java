@@ -7,10 +7,10 @@ import com.github.nicosensei.lostdir.elasticsearch.MapDocument;
 import com.github.nicosensei.lostdir.helpers.GenericJsonObjectMapper;
 import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 import com.github.nicosensei.lostdir.helpers.TimeFormatter;
-import com.github.nicosensei.lostdir.tika.JpegMetadataExtractor;
-import com.github.nicosensei.lostdir.tika.M4rMetadataExtractor;
-import com.github.nicosensei.lostdir.tika.M4vMetadataExtractor;
-import com.github.nicosensei.lostdir.tika.Mp3MetadataExtractor;
+import com.github.nicosensei.lostdir.metadata.JpegMetadataExtractor;
+import com.github.nicosensei.lostdir.metadata.M4rMetadataExtractor;
+import com.github.nicosensei.lostdir.metadata.M4vMetadataExtractor;
+import com.github.nicosensei.lostdir.metadata.Mp3MetadataExtractor;
 import com.github.nicosensei.lostdir.scan.trid.Trid;
 import org.elasticsearch.ElasticsearchException;
 import org.slf4j.Logger;
@@ -33,15 +33,23 @@ public final class ScanDirectoryES {
 
     public static void main(final String[] args) throws IOException {
 
-        if (args.length != 1) {
-            LOG.error("Expected folder to scan as argument");
+        if (args.length != 2) {
+            LOG.error("Usage: " + ScanDirectoryES.class.getCanonicalName() + " <folder to scan as argument> " +
+                    "<threshold>?");
             System.exit(0);
         }
 
-        new ScanDirectoryES().scan(args[0]);
+        double threshold = ScanPolicy.DEFAULT_KEEP_THRESHOLD;
+        try {
+            threshold = Double.parseDouble(args[1]);
+        } catch (NumberFormatException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        LOG.info("Using keep threshold of " + threshold);
+        new ScanDirectoryES().scan(args[0], threshold);
     }
 
-    public void scan(final String path) throws IOException {
+    public void scan(final String path, final double threshold) throws IOException {
         final long start = System.currentTimeMillis();
 
         final LocalNode elastic = new LocalNode(
@@ -56,6 +64,7 @@ public final class ScanDirectoryES {
 
         final GenericJsonObjectMapper<FileDiagnostic> mapper = new GenericJsonObjectMapper<>();
 
+        final ScanPolicy scanPolicy = new ScanPolicy(threshold);
         try {
             final Trid trid = new Trid();
             final File dir = new File(path);
@@ -68,13 +77,11 @@ public final class ScanDirectoryES {
                 try {
                     count++;
                     FileDiagnostic diag = trid.testFile(f);
-                    if (diag == null) {
-                        diag = new FileDiagnostic(f);
-                    }
+                    diag.apply(scanPolicy);
                     if (!diag.getExtensions().isEmpty()) {
                         recoverableCount++;
                         extractMetadata(diag);
-                        LOG.info("[OK] {} - {}", diag.toString());
+                        LOG.info("[OK] {}", diag.toString());
                     } else {
                         LOG.info("[KO] {}", diag.getPath());
                     }

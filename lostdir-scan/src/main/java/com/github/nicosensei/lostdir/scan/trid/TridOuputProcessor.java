@@ -5,6 +5,9 @@ import com.github.nicosensei.lostdir.scan.Extension;
 import com.github.nicosensei.lostdir.scan.FileDiagnostic;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -1,10 +1,8 @@
-package com.github.nicosensei.lostdir.tika;
+package com.github.nicosensei.lostdir.metadata;
 
 import com.github.nicosensei.lostdir.scan.FileDiagnostic;
 import com.github.nicosensei.lostdir.scan.KeyValuePair;
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.PropertyTypeException;
 import org.apache.tika.parser.AbstractParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.sax.BodyContentHandler;

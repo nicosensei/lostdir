@@ -24,6 +24,11 @@
         </dependency>
         <dependency>
             <groupId>com.github.nicosensei</groupId>
+            <artifactId>lostdir-metadata</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nicosensei</groupId>
             <artifactId>lostdir-elasticsearch</artifactId>
             <version>${project.version}</version>
         </dependency>

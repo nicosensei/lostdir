@@ -47,7 +47,8 @@ public final class Trid {
             throw new IOException(file.getAbsolutePath() + " is not a readable file");
         }
         if (0 == file.length()) {
-            throw new IOException(file.getAbsolutePath() + " has zero size");
+            LOG.info(file.getAbsolutePath() + " has zero size");
+            return new FileDiagnostic(file);
         }
 
         final TridOuputProcessor proc = new TridOuputProcessor(file.getAbsolutePath());
@@ -58,7 +59,6 @@ public final class Trid {
                 timeOutValue,
                 timeOutUnit);
         return result;
-
     }
 
     private final void unpackTridRuntime() throws IOException {

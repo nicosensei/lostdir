@@ -1,4 +1,4 @@
-package com.github.nicosensei.lostdir.recover;
+package com.github.nicosensei.lostdir.metadata;
 
 import java.util.Map;
 

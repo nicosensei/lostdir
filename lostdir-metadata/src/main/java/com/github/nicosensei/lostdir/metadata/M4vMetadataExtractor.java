@@ -1,7 +1,4 @@
-package com.github.nicosensei.lostdir.tika;
-
-import org.apache.tika.parser.AbstractParser;
-import org.apache.tika.parser.jpeg.JpegParser;
+package com.github.nicosensei.lostdir.metadata;
 
 /**
  * Created by nicos on 11/5/2016.

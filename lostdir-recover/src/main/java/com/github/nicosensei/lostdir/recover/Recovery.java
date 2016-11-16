@@ -5,6 +5,9 @@ import com.github.nicosensei.lostdir.elasticsearch.LocalNodeDefaults;
 import com.github.nicosensei.lostdir.elasticsearch.Scroll;
 import com.github.nicosensei.lostdir.helpers.GenericJsonObjectMapper;
 import com.github.nicosensei.lostdir.helpers.TimeFormatter;
+import com.github.nicosensei.lostdir.metadata.FileNameBuilder;
+import com.github.nicosensei.lostdir.metadata.JpgFileNameBuilder;
+import com.github.nicosensei.lostdir.metadata.Mp4FileNameBuilder;
 import com.github.nicosensei.lostdir.scan.Extension;
 import com.github.nicosensei.lostdir.scan.FileDiagnostic;
 import com.github.nicosensei.lostdir.scan.KeyValuePair;
@@ -111,7 +114,7 @@ public final class Recovery {
         final Recovery reco = new Recovery(esHomeDir);
         try {
             reco.recover("JPG", outputDir, new JpgFileNameBuilder());
-            reco.recover("MP4", outputDir, new Mp4FileNameBuilder());
+            reco.recover("M4V", outputDir, new Mp4FileNameBuilder("m4v"));
         } finally {
             reco.close();
         }

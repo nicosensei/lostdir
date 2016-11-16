@@ -1,4 +1,4 @@
-package com.github.nicosensei.lostdir.recover;
+package com.github.nicosensei.lostdir.metadata;
 
 import java.util.Map;
 
@@ -24,16 +24,22 @@ public final class Mp4FileNameBuilder implements FileNameBuilder {
 
     private static final String VID_PREFIX = "VID";
     private static final String SEP = "_";
-    private static final String DOT_MP4 = ".mp4";
+    private static final String DOT = ".";
 
     private int seq = 0;
+
+    private final String ext;
+
+    public Mp4FileNameBuilder(String ext) {
+        this.ext = ext;
+    }
 
     @Override
     public String build(Map<String, Object> metadata) {
         final StringBuilder name = new StringBuilder(VID_PREFIX);
         final String date = (String) metadata.get(Key.date.key);
         name.append(SEP).append(date != null ? date.replaceAll("\\D", "") : ++seq);
-        return name.append(DOT_MP4).toString();
+        return name.append(DOT).append(ext).toString();
     }
 
 }
