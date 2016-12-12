@@ -8,6 +8,10 @@
     {
       "ext": "jpg",
       "file_pattern": "f\\d+\\.jpg"
+    },
+    {
+      "ext": "mp4",
+      "file_pattern": "f\\d+\\.mp4"
     }
   ]
 }

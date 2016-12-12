@@ -11,7 +11,7 @@ public final class JpegMetadataExtractor extends AbstractMetadataExtractor {
     public static final String EXTENSION = "JPG";
 
     @Override
-    protected String getExtension() {
+    public String getExtension() {
         return EXTENSION;
     }
 

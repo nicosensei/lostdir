@@ -68,7 +68,7 @@ public abstract class AbstractMetadataExtractor {
         }
     }
 
-    protected abstract String getExtension();
+    public abstract String getExtension();
 
     protected abstract Class<? extends AbstractParser> getParserClass();
 

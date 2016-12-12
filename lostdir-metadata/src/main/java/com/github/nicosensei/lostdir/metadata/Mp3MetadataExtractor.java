@@ -11,7 +11,7 @@ public final class Mp3MetadataExtractor extends AbstractMetadataExtractor {
     public static final String EXTENSION = "MP3";
 
     @Override
-    protected String getExtension() {
+    public String getExtension() {
         return EXTENSION;
     }
 

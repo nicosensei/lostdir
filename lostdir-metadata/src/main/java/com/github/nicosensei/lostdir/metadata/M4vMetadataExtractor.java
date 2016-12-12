@@ -8,7 +8,7 @@ public final class M4vMetadataExtractor extends MP4MetadataExtractor {
     public static final String EXTENSION = "M4V";
 
     @Override
-    protected String getExtension() {
+    public String getExtension() {
         return EXTENSION;
     }
 

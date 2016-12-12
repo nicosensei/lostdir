@@ -4,6 +4,8 @@ import com.github.nicosensei.lostdir.metadata.AbstractMetadataExtractor;
 import com.github.nicosensei.lostdir.metadata.FileNameBuilder;
 import com.github.nicosensei.lostdir.metadata.JpegMetadataExtractor;
 import com.github.nicosensei.lostdir.metadata.JpgFileNameBuilder;
+import com.github.nicosensei.lostdir.metadata.M4vMetadataExtractor;
+import com.github.nicosensei.lostdir.metadata.Mp4FileNameBuilder;
 import com.github.nicosensei.lostdir.rename.config.Task;
 import com.github.nicosensei.lostdir.scan.Extension;
 import com.github.nicosensei.lostdir.scan.FileDiagnostic;
@@ -42,6 +44,11 @@ public final class RenameTask implements Callable<Boolean> {
                 pickRules.add(new JpgMinResolutionRule("Exif Image Width", 640, "Exif Image Height", 480));
                 pickRules.add(new JpgMinResolutionRule("Image Width", 640, "Image Height", 480));
                 break;
+            case "mp4":
+                metadataExtractor = new M4vMetadataExtractor();
+                fileNameBuilder = new Mp4FileNameBuilder("mp4");
+                pickRules.add(new JpgMinResolutionRule("tiff:ImageWidth", 0, "tiff:ImageLength", 0));
+                break;
             default:
                 throw new IllegalStateException("Unsuported ext " + task.getExt());
         }
@@ -50,7 +57,7 @@ public final class RenameTask implements Callable<Boolean> {
     @Override
     public Boolean call() throws Exception {
         final FileDiagnostic fd = new FileDiagnostic(file);
-        fd.addOrMergeExtension(new Extension(task.getExt().toUpperCase(), 100, ""));
+        fd.addOrMergeExtension(new Extension(metadataExtractor.getExtension(), 100, ""));
         metadataExtractor.extractTo(fd);
         final Extension extension = fd.getExtensions().get(0);
         boolean pick = false;
