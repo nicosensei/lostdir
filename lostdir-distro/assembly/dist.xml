@@ -58,5 +58,22 @@
               </fileSets>
           </sources>
 	  </moduleSet>
+      <moduleSet>
+          <useAllReactorProjects>true</useAllReactorProjects>
+          <includes>
+              <include>com.github.nicosensei:lostdir-rename</include>
+          </includes>
+          <sources>
+              <fileSets>
+                  <fileSet>
+                      <outputDirectory>../lostdir</outputDirectory>
+                      <directory>target</directory>
+                      <includes>
+                          <include>*-standalone.jar</include>
+                      </includes>
+                  </fileSet>
+              </fileSets>
+          </sources>
+      </moduleSet>
   </moduleSets>
 </assembly>

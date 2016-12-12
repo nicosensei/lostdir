@@ -80,7 +80,7 @@ public final class Recovery {
             }
 
             final String filePath = diag.getPath();
-            final String name = fileNameBuilder.build(metadataAsMap(diag, ext));
+            final String name = fileNameBuilder.build(diag.metadataAsMap(ext));
             recover(filePath, outputDir.getAbsolutePath() + File.separator + name);
             LOG.info("Recovered {} to {}", filePath, name.toString());
         }
@@ -144,22 +144,6 @@ public final class Recovery {
                 LOG.error(e.getMessage(), e);
             }
         }
-    }
-
-    private final Map<String, Object> metadataAsMap(final FileDiagnostic diag, final String ext) {
-        final Extension extension = diag.getExtension(ext);
-        if (extension == null) {
-            throw new IllegalArgumentException("No extension " + ext + " for " + diag.getPath());
-        }
-        final ArrayList<KeyValuePair> metadata = extension.getMetadata();
-        if (metadata == null) {
-            return Collections.emptyMap();
-        }
-        final HashMap<String, Object> metaMap = new HashMap<>(metadata.size());
-        for (KeyValuePair data : metadata) {
-            metaMap.put(data.getKey(), data.getValue());
-        }
-        return metaMap;
     }
 
 }

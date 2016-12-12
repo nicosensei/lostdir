@@ -1,0 +1,13 @@
+{
+  "await_termination_in_minutes": 5,
+  "tasks": [
+    {
+      "ext": "jpg",
+      "file_pattern": "t\\d+\\.jpg"
+    },
+    {
+      "ext": "jpg",
+      "file_pattern": "f\\d+\\.jpg"
+    }
+  ]
+}

@@ -48,7 +48,7 @@ public final class Trid {
         }
         if (0 == file.length()) {
             LOG.info(file.getAbsolutePath() + " has zero size");
-            return new FileDiagnostic(file);
+            return new FileDiagnostic(file.getAbsolutePath(), 0);
         }
 
         final TridOuputProcessor proc = new TridOuputProcessor(file.getAbsolutePath());

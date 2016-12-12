@@ -200,6 +200,7 @@
         <module>lostdir-elasticsearch</module>
         <module>lostdir-scan</module>
         <module>lostdir-recover</module>
+        <module>lostdir-rename</module>
         <module>lostdir-distro</module>
     </modules>
 

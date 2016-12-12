@@ -8,6 +8,9 @@ import com.github.nicosensei.lostdir.helpers.GlobalConstants;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nicos on 11/3/2016.
@@ -93,6 +96,26 @@ public final class FileDiagnostic {
         }
         this.extensions.clear();
         this.extensions.addAll(keep);
+    }
+
+    public final Map<String, Object> metadataAsMap(final String ext) {
+        final Extension extension = getExtension(ext);
+        if (extension == null) {
+            throw new IllegalArgumentException("No extension " + ext + " for " + path);
+        }
+        return metadataAsMap(extension);
+    }
+
+    public final Map<String, Object> metadataAsMap(final Extension extension) {
+        final ArrayList<KeyValuePair> metadata = extension.getMetadata();
+        if (metadata == null) {
+            return Collections.emptyMap();
+        }
+        final HashMap<String, Object> metaMap = new HashMap<>(metadata.size());
+        for (KeyValuePair data : metadata) {
+            metaMap.put(data.getKey(), data.getValue());
+        }
+        return metaMap;
     }
 
 }

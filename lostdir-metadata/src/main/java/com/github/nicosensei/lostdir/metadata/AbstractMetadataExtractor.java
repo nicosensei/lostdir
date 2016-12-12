@@ -39,27 +39,33 @@ public abstract class AbstractMetadataExtractor {
         final Metadata metadata = new Metadata();
         final String filePath = diag.getPath();
         final ParseContext pcontext = new ParseContext();
-        final FileInputStream inputstream;
+        final FileInputStream inputStream;
         try {
-            inputstream = new FileInputStream(new File(filePath));
+            inputStream = new FileInputStream(new File(filePath));
         } catch (final IOException e) {
             LOG.error("Failed to open file {}" + filePath, e);
             return;
         }
         try {
-            parser.parse(inputstream, handler, metadata, pcontext);
+            parser.parse(inputStream, handler, metadata, pcontext);
+
+            final ArrayList<KeyValuePair> md = new ArrayList<>(metadata.size());
+            for (String key : metadata.names()) {
+                md.add(new KeyValuePair(
+                        key,
+                        metadata.isMultiValued(key) ? metadata.getValues(key) : metadata.get(key)));
+            }
+            diag.getExtension(extension).setMetadata(md);
         } catch (final Throwable t) {
             LOG.error("Failed to parse file " + filePath, t);
             return;
+        } finally {
+            try {
+                inputStream.close();
+            } catch (final IOException e) {
+                LOG.error("Failed to close {}", filePath);
+            }
         }
-
-        final ArrayList<KeyValuePair> md = new ArrayList<>(metadata.size());
-        for (String key : metadata.names()) {
-            md.add(new KeyValuePair(
-                    key,
-                    metadata.isMultiValued(key) ? metadata.getValues(key) : metadata.get(key)));
-        }
-        diag.getExtension(extension).setMetadata(md);
     }
 
     protected abstract String getExtension();

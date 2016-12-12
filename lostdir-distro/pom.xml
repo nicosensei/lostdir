@@ -28,6 +28,11 @@
             <artifactId>lostdir-recover</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.nicosensei</groupId>
+            <artifactId>lostdir-rename</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
