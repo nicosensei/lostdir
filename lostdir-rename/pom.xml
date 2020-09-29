@@ -10,7 +10,7 @@
     </parent>
 
     <properties>
-        <mainClass>com.github.nicosensei.lostdir.recover.Recovery</mainClass>
+        <mainClass>com.github.nicosensei.lostdir.rename.Renamer</mainClass>
     </properties>
 
     <artifactId>lostdir-rename</artifactId>

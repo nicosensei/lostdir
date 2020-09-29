@@ -7,6 +7,6 @@ import java.util.Map;
  */
 public interface FileNameBuilder {
 
-    String build(final Map<String, Object> metadata);
+    String build(final String originalName, final Map<String, Object> metadata);
 
 }

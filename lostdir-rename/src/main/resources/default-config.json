@@ -12,6 +12,10 @@
     {
       "ext": "mp4",
       "file_pattern": "f\\d+\\.mp4"
+    },
+    {
+      "ext": "mp3",
+      "file_pattern": "f\\d+\\.mp3"
     }
   ]
 }

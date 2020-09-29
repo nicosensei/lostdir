@@ -22,18 +22,17 @@ public final class JpgFileNameBuilder implements FileNameBuilder {
         }
     }
 
-    private static final String IMG_PREFIX = "IMG";
-    private static final String SEP = "_";
+    private static final String IMG_PREFIX = "IMG_";
     private static final String DOT_JPG = ".jpg";
 
-    private int seq = 0;
-
     @Override
-    public String build(Map<String, Object> metadata) {
-        final StringBuilder name = new StringBuilder(IMG_PREFIX);
-        final String date = (String) metadata.get(JpegMeta.date.key);
-        name.append(SEP).append(date != null ? date.replaceAll("\\D", "") : ++seq);
-        return name.append(DOT_JPG).toString();
+    public String build(final String originalName, Map<String, Object> metadata) {
+        if (metadata.keySet().contains(JpegMeta.date.key)) {
+            final String date = (String) metadata.get(JpegMeta.date.key);
+            return new StringBuilder(IMG_PREFIX).append(date.replaceAll("\\D", ""))
+                    .append(DOT_JPG).toString();
+        }
+        return new StringBuilder(IMG_PREFIX).append(originalName).toString();
     }
 
 }

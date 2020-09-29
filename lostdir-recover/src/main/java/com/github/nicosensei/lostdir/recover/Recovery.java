@@ -80,7 +80,7 @@ public final class Recovery {
             }
 
             final String filePath = diag.getPath();
-            final String name = fileNameBuilder.build(diag.metadataAsMap(ext));
+            final String name = fileNameBuilder.build(new File(diag.getPath()).getName(), diag.metadataAsMap(ext));
             recover(filePath, outputDir.getAbsolutePath() + File.separator + name);
             LOG.info("Recovered {} to {}", filePath, name.toString());
         }

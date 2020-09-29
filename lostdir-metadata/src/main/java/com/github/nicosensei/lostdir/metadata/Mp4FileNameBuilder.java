@@ -22,11 +22,8 @@ public final class Mp4FileNameBuilder implements FileNameBuilder {
         }
     }
 
-    private static final String VID_PREFIX = "VID";
-    private static final String SEP = "_";
+    private static final String VID_PREFIX = "VID_";
     private static final String DOT = ".";
-
-    private int seq = 0;
 
     private final String ext;
 
@@ -35,11 +32,13 @@ public final class Mp4FileNameBuilder implements FileNameBuilder {
     }
 
     @Override
-    public String build(Map<String, Object> metadata) {
-        final StringBuilder name = new StringBuilder(VID_PREFIX);
-        final String date = (String) metadata.get(Key.date.key);
-        name.append(SEP).append(date != null ? date.replaceAll("\\D", "") : ++seq);
-        return name.append(DOT).append(ext).toString();
+    public String build(final String originalName, final Map<String, Object> metadata) {
+        if (metadata.keySet().contains(Key.date.key)) {
+            final String date = (String) metadata.get(Key.date.key);
+            return new StringBuilder(VID_PREFIX).append(date.replaceAll("\\D", ""))
+                    .append(DOT).append(ext).toString();
+        }
+        return new StringBuilder(VID_PREFIX).append(originalName).toString();
     }
 
 }

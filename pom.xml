@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.elasticsearch>2.4.1</version.elasticsearch>
+        <version.elasticsearch>2.4.6</version.elasticsearch>
         <version.junit>4.12</version.junit>
         <!-- Logging -->
         <version.slf4j>1.7.9</version.slf4j>

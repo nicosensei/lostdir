@@ -1,11 +1,6 @@
 package com.github.nicosensei.lostdir.rename;
 
-import com.github.nicosensei.lostdir.metadata.AbstractMetadataExtractor;
-import com.github.nicosensei.lostdir.metadata.FileNameBuilder;
-import com.github.nicosensei.lostdir.metadata.JpegMetadataExtractor;
-import com.github.nicosensei.lostdir.metadata.JpgFileNameBuilder;
-import com.github.nicosensei.lostdir.metadata.M4vMetadataExtractor;
-import com.github.nicosensei.lostdir.metadata.Mp4FileNameBuilder;
+import com.github.nicosensei.lostdir.metadata.*;
 import com.github.nicosensei.lostdir.rename.config.Task;
 import com.github.nicosensei.lostdir.scan.Extension;
 import com.github.nicosensei.lostdir.scan.FileDiagnostic;
@@ -49,8 +44,13 @@ public final class RenameTask implements Callable<Boolean> {
                 fileNameBuilder = new Mp4FileNameBuilder("mp4");
                 pickRules.add(new JpgMinResolutionRule("tiff:ImageWidth", 0, "tiff:ImageLength", 0));
                 break;
+            case "mp3":
+                metadataExtractor = new Mp3MetadataExtractor();
+                fileNameBuilder = new Mp3FileNameBuilder("mp3");
+                pickRules.add(new HasTitleRule());
+                break;
             default:
-                throw new IllegalStateException("Unsuported ext " + task.getExt());
+                throw new IllegalArgumentException("Unsupported extension " + task.getExt());
         }
     }
 
@@ -70,7 +70,7 @@ public final class RenameTask implements Callable<Boolean> {
             return false;
         }
 
-        final String renameTo = fileNameBuilder.build(fd.metadataAsMap(extension));
+        final String renameTo = fileNameBuilder.build(new File(fd.getPath()).getName(), fd.metadataAsMap(extension));
         final File source = new File(fd.getPath());
         final File dest = new File(source.getParent(), renameTo);
         try {
